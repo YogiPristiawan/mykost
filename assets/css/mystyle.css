@@ -1,0 +1,22 @@
+.jumbotron-bg {
+	background-image: url(http://localhost/mykost/uploads/produk/jumbotron1.jpg);
+	background-size: cover;
+	background-position: center -110px;
+	filter: blur(2px);
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	bottom: 0px;
+	left: 0px;
+	z-index: -1px;
+}
+body .jumbotron {
+	position: relative;
+}
+.jumbotron .container {
+	position: relative;
+	z-index: 1px;
+}
+body {
+	height: 5000px;
+}
