@@ -163,59 +163,44 @@ class Produk extends CI_Controller
 
 
 	// MELAKUKAN BOOKING & PEMBAYARAN PRODUK
-	public function booking($produk_id)
+	public function booking()
 	{
 		// jika admin maka redirect ke 404 Not Found, untuk mencegah admin melakukan booking
 		if (isAdmin()) {
 			return $this->err_404();
 		}
-		$this->form_validation->set_rules('nama_pemesan', 'Nama Pemesan', ['required', 'alpha_numeric_spaces']);
-		$this->form_validation->set_rules('alamat', 'Alamat', ['required']);
-		$this->form_validation->set_rules('no_telp', 'No. Telepon', ['required', 'numeric']);
-		$this->form_validation->set_rules('jumlah', 'Jumlah', ['required', 'numeric']);
+		$payment['invoice'] = $this->input->post('invoice');
+		$payment['tanggal'] = $this->input->post('tanggal');
+		$payment['nama_produk'] = $this->input->post('nama_produk');
+		$payment['nama_pemesan'] = $this->input->post('nama_pemesan');
+		$payment['alamat'] = $this->input->post('alamat');
+		$payment['no_telp'] = $this->input->post('no_telp');
+		$payment['jumlah'] = $this->input->post('jumlah');
+		$payment['bukti_tf'] = $this->booking->uploadImage($payment['invoice']);
 
-		if ($this->form_validation->run() === FALSE) {
-			$data['title'] = 'Booking kost';
-			$data['invoice'] = date('ymd') . $produk_id;		// generate kode invoice
-			$data['produk'] = $this->produk->getById($produk_id);
+		$booking['booking_at'] = $this->input->post('tanggal');
+		$booking['produk_id'] = $this->input->post('produk_id');
+		$booking['pay_invoice'] = $this->input->post('invoice');
 
-			$this->load->view('layouts/header', $data);
-			$this->load->view('pages/booking/index');
-			$this->load->view('layouts/footer');
+		// jika gagal upload gambar
+		if ($payment['bukti_tf'] === FALSE) {
+			redirect('home/index');
+		}
+
+		$this->db->db_debug = FALSE;
+
+		$this->db->trans_start();
+		$this->payment->add($payment);
+		$this->booking->add($booking);
+		$this->produk->update($booking['produk_id'], ['status' => '1']);
+		$this->db->trans_complete();
+
+		if ($this->db->trans_status() === FALSE) {
+			$this->session->set_flashdata('message', 'Gagal melakukan booking.');
+			redirect('home');
 		} else {
-			$payment['invoice'] = $this->input->post('invoice');
-			$payment['tanggal'] = $this->input->post('tanggal');
-			$payment['nama_produk'] = $this->input->post('nama_produk');
-			$payment['nama_pemesan'] = $this->input->post('nama_pemesan');
-			$payment['alamat'] = $this->input->post('alamat');
-			$payment['no_telp'] = $this->input->post('no_telp');
-			$payment['jumlah'] = $this->input->post('jumlah');
-			$payment['bukti_tf'] = $this->booking->uploadImage($payment['invoice']);
-
-			$booking['booking_at'] = $this->input->post('tanggal');
-			$booking['produk_id'] = $this->input->post('produk_id');
-			$booking['pay_invoice'] = $this->input->post('invoice');
-
-			// jika gagal upload gambar
-			if ($payment['bukti_tf'] === FALSE) {
-				redirect('produk/booking');
-			}
-
-			$this->db->db_debug = FALSE;
-
-			$this->db->trans_start();
-			$this->payment->add($payment);
-			$this->booking->add($booking);
-			$this->produk->update($booking['produk_id'], ['status' => '1']);
-			$this->db->trans_complete();
-
-			if ($this->db->trans_status() === FALSE) {
-				$this->session->set_flashdata('message', 'Gagal melakukan booking.');
-				redirect('home');
-			} else {
-				$this->session->set_flashdata('message', 'Berhasil melakukan booking.');
-				redirect('home');
-			}
+			$this->session->set_flashdata('message', 'Berhasil melakukan booking.');
+			redirect('home');
 		}
 	}
 }

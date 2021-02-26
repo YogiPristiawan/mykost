@@ -19,8 +19,8 @@ class Home extends CI_Controller
 		$data['title'] = 'Mykost';
 		$data['produk'] = $this->produk->getAll();
 
-		$this->load->view('layouts/header', $data);
-		$this->load->view('pages/home/index');
-		$this->load->view('layouts/footer');
+		// $this->load->view('layouts/header', $data);
+		$this->load->view('pages/home/index', $data);
+		// $this->load->view('layouts/footer');
 	}
 }

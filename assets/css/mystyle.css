@@ -20,3 +20,17 @@ body .jumbotron {
 body {
 	height: 5000px;
 }
+.card {
+	width: 18rem;
+}
+
+.card-body {
+	position: relative;
+	padding-bottom: 80px;
+}
+.btn-wrapper {
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+}
