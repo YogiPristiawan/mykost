@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 23 Feb 2021 pada 11.33
+-- Waktu pembuatan: 27 Feb 2021 pada 04.51
 -- Versi server: 10.4.14-MariaDB
 -- Versi PHP: 7.4.9
 
@@ -39,8 +39,7 @@ CREATE TABLE `booking` (
 --
 
 INSERT INTO `booking` (`booking_id`, `booking_at`, `produk_id`, `pay_invoice`) VALUES
-(98, '2021-02-19', 9, '2102199'),
-(99, '2021-02-19', 10, '21021910');
+(1, '2021-02-27', 17, '2102275617');
 
 -- --------------------------------------------------------
 
@@ -64,8 +63,7 @@ CREATE TABLE `payment` (
 --
 
 INSERT INTO `payment` (`invoice`, `tanggal`, `nama_produk`, `nama_pemesan`, `alamat`, `no_telp`, `jumlah`, `bukti_tf`) VALUES
-('21021910', '2021-02-19', 'KAMAR 2', 'Yogi', 'Jogja', '08813896779', '400000', 'payment_21021910.jpg'),
-('2102199', '2021-02-19', 'KAMAR 1', 'Yogi Pristiawan', 'Yogyakarta', '085290444021', '500000', 'payment_2102199.jpg');
+('2102275617', '2021-02-27', 'Telesweet', 'Yogi Pristiawan', 'Yogyakarta', '085290444021', '450000', 'payment_2102275617.jpg');
 
 -- --------------------------------------------------------
 
@@ -88,10 +86,12 @@ CREATE TABLE `produk` (
 --
 
 INSERT INTO `produk` (`produk_id`, `nama_produk`, `tipe`, `harga`, `deskripsi`, `gambar`, `status`) VALUES
-(9, 'KAMAR 1', 'A', '500000', 'Bersih, tersedia lemari', 'KAMAR_1.jpg', '1'),
-(10, 'KAMAR 2', 'B', '400000', 'Dekat parkiran', 'KAMAR_2.jpg', '1'),
-(11, 'KAMAR 3', 'A', '600000', 'Ada meja belajar', 'KAMAR_3.jpg', '0'),
-(12, 'KAMAR 4', 'B', '750000', 'Kamar ukuran 4x4 meter.', 'KAMAR_4.jpg', '0');
+(16, 'Cabinsoft', 'B', '500000', 'Kamar tidur lokasi lantai 2, tersedia meja belajar, selimut, jendela menghadap langsung ke jalan raya.', 'Cabinsoft.jpg', '0'),
+(17, 'Telesweet', 'B', '450000', 'Lokasi kamar di lantai2, ruangan minmalis, tidak tersedia ranjang tidur, tidak ada meja belajar', 'Telesweet.jpg', '1'),
+(18, 'Softdude', 'B', '450000', 'Lokasi kamar di lantai 2, ruangan minimalis, tersedia meja belajar', 'Softdude.jpg', '0'),
+(19, 'Funvita', 'A', '700000', 'Lokasi kamar di lantai 1, ada tempat tidur, meja belajar, tersedia AC, ruangan nyaman.', 'Funvita.jpg', '0'),
+(20, 'Royalprimary', 'A', '800000', 'Lokasi kamar di lantai 2, ruangan mewah, nayaman, tersedia tempat tidur, meja belajar, jendela menghadap taman, juga tersedia AC.', 'Safetyvita.jpg', '0'),
+(21, 'Onlynova', 'A', '600000', 'Lokasi kamar di lantai 1, kamar tidur nyaman, tersedia lemari, bersih.', 'Onlynova.jpg', '0');
 
 -- --------------------------------------------------------
 
@@ -181,13 +181,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT untuk tabel `booking`
 --
 ALTER TABLE `booking`
-  MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=100;
+  MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT untuk tabel `produk`
 --
 ALTER TABLE `produk`
-  MODIFY `produk_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `produk_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT untuk tabel `users`

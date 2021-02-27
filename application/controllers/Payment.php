@@ -19,9 +19,9 @@ class Payment extends CI_Controller
 		$data['title'] = 'Riwayat Pembyaran';
 		$data['payment'] = $this->payment->getAll();
 
-		$this->load->view('layouts/header', $data);
+		$this->load->view('admin/layouts/header', $data);
 		$this->load->view('admin/payment/index');
-		$this->load->view('layouts/footer');
+		$this->load->view('admin/layouts/footer');
 	}
 
 	// tampilkan detail pembayaran
@@ -35,8 +35,8 @@ class Payment extends CI_Controller
 		$data['title'] = 'Detail pembayaran';
 		$data['payment'] = $this->payment->getByInvoice($invoice);
 
-		$this->load->view('layouts/header', $data);
+		$this->load->view('admin/layouts/header', $data);
 		$this->load->view('admin/payment/detail');
-		$this->load->view('layouts/footer');
+		$this->load->view('admin/layouts/footer');
 	}
 }

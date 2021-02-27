@@ -14,17 +14,4 @@ class Users_model extends CI_Model
 	{
 		return $this->db->get_where('users', ['email' => $email])->row_array();
 	}
-
-	// tambah data users
-	public function add($data)
-	{
-		$this->db->inser('users', $data);
-		return $this->db->affected_rows();
-	}
-
-	// hapus data users
-	public function delete($id)
-	{
-		return $this->db->delete('users', ['id' => $id]);
-	}
 }

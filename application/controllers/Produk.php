@@ -24,25 +24,39 @@ class Produk extends CI_Controller
 		$data['title'] = 'Produk';
 		$data['produk'] = $this->produk->getAll();
 
-		$this->load->view('layouts/header', $data);
+		$this->load->view('admin/layouts/header', $data);
 		$this->load->view('admin/produk/index');
-		$this->load->view('layouts/footer');
+		$this->load->view('admin/layouts/footer');
 	}
 
 	// menampilkan detail produk
 	public function detail($id = '')
 	{
-		// jika bukan admin tampilkan halaman 404 Not Found
-		if (!isAdmin()) {
-			return $this->err_404();
+
+		if (isAdmin()) {
+
+			// jika admin yang akses
+			$data['title'] = 'Detail produk';
+			$data['produk'] = $this->produk->getById($id);
+
+			$this->load->view('admin/layouts/header', $data);
+			$this->load->view('admin/produk/detail');
+			$this->load->view('admin/layouts/footer');
+		} else {
+
+			// jika user yang akses
+			$data['title'] = 'Detail produk';
+			$data['produk'] = $this->produk->getById($id);
+
+			// jika produk dipesan tampilkan detail pemesanan
+			if ($data['produk']['status'] == '1') {
+				$data['booking'] = $this->booking->detail($id);
+			}
+
+			$this->load->view('layouts/header', $data);
+			$this->load->view('pages/produk/detail');
+			$this->load->view('layouts/footer');
 		}
-
-		$data['title'] = 'Detail produk';
-		$data['produk'] = $this->produk->getById($id);
-
-		$this->load->view('layouts/header', $data);
-		$this->load->view('admin/produk/detail');
-		$this->load->view('layouts/footer');
 	}
 
 	// tambah data produk
@@ -63,9 +77,9 @@ class Produk extends CI_Controller
 			$data['title'] = 'Tambah data produk';
 			$data['tipe'] = $this->tipe->getAll();
 
-			$this->load->view('layouts/header', $data);
+			$this->load->view('admin/layouts/header', $data);
 			$this->load->view('admin/produk/tambah');
-			$this->load->view('layouts/footer');
+			$this->load->view('admin/layouts/footer');
 		} else {
 
 			$data['nama_produk'] = $this->input->post('nama_produk');
@@ -79,10 +93,10 @@ class Produk extends CI_Controller
 			}
 
 			if ($this->produk->add($data)) {
-				$this->session->set_flashdata('message', 'Data produk berhasil ditambahkan.');
+				$this->session->set_flashdata('message', '<div class="alert alert-success m-auto" role="alert">Data produk berhasil ditambahkan.</div>');
 				redirect('produk');
 			} else {
-				$this->session->set_flashdata('message', 'Data produk gagal ditambahkan.');
+				$this->session->set_flashdata('message', '<div class="alert alert-danger m-auto" role="alert">Data produk gagal ditambahkan.</div>');
 				redirect('produk');
 			}
 		}
@@ -106,9 +120,9 @@ class Produk extends CI_Controller
 			$data['produk'] = $this->produk->getById($id);
 			$data['tipe'] = $this->tipe->getAll();
 
-			$this->load->view('layouts/header', $data);
+			$this->load->view('admin/layouts/header', $data);
 			$this->load->view('admin/produk/edit');
-			$this->load->view('layouts/footer');
+			$this->load->view('admin/layouts/footer');
 		} else {
 
 			$data['produk_id'] = $this->input->post('produk_id');
@@ -126,10 +140,10 @@ class Produk extends CI_Controller
 			}
 
 			if ($this->produk->update($data['produk_id'], $data)) {
-				$this->session->set_flashdata('message', 'Data produk berhasil diubah.');
+				$this->session->set_flashdata('message', '<div class="alert alert-success m-auto" role="alert">Data produk berhasil diubah.</div>');
 				redirect(base_url('produk'));
 			} else {
-				$this->session->set_flashdata('message', 'Data produk gagal diubah.');
+				$this->session->set_flashdata('message', '<div class="alert alert-danger m-auto" role="alert">Data produk gagal ditambahkan.</div>');
 				redirect(base_url('produk'));
 			}
 		}
@@ -151,12 +165,12 @@ class Produk extends CI_Controller
 
 			// jika berhasil
 			unlink('uploads/produk/' . $produk['gambar']);  // hapus foto yang ada di folder uploads
-			$this->session->set_flashdata('message', 'Data produk berhasil dihapus.');
+			$this->session->set_flashdata('message', '<div class="alert alert-success m-auto" role="alert">Data produk berhasil dihapus.</div>');
 			redirect(base_url('produk'));
 		} else {
 
 			// jika gagal (produk masih berada di daftar booking);
-			$this->session->set_flashdata('message', 'Data produk masih berada di daftar booking. Data produk gagal dihapus.');
+			$this->session->set_flashdata('message', '<div class="alert alert-danger m-auto" role="alert">Data produk gagal dihapus.</div>');
 			redirect(base_url('produk'));
 		}
 	}
@@ -169,6 +183,7 @@ class Produk extends CI_Controller
 		if (isAdmin()) {
 			return $this->err_404();
 		}
+
 		$payment['invoice'] = $this->input->post('invoice');
 		$payment['tanggal'] = $this->input->post('tanggal');
 		$payment['nama_produk'] = $this->input->post('nama_produk');
@@ -184,23 +199,24 @@ class Produk extends CI_Controller
 
 		// jika gagal upload gambar
 		if ($payment['bukti_tf'] === FALSE) {
-			redirect('home/index');
-		}
-
-		$this->db->db_debug = FALSE;
-
-		$this->db->trans_start();
-		$this->payment->add($payment);
-		$this->booking->add($booking);
-		$this->produk->update($booking['produk_id'], ['status' => '1']);
-		$this->db->trans_complete();
-
-		if ($this->db->trans_status() === FALSE) {
-			$this->session->set_flashdata('message', 'Gagal melakukan booking.');
 			redirect('home');
 		} else {
-			$this->session->set_flashdata('message', 'Berhasil melakukan booking.');
-			redirect('home');
+
+			// $this->db->db_debug = FALSE;
+
+			$this->db->trans_start();
+			$this->payment->add($payment);
+			$this->booking->add($booking);
+			$this->produk->update($booking['produk_id'], ['status' => '1']);
+			$this->db->trans_complete();
+
+			if ($this->db->trans_status() === FALSE) {
+				$this->session->set_flashdata('message', '<div class="alert alert-danger m-auto" role="alert">Gagal melakukan booking.</div>');
+				redirect('home');
+			} else {
+				$this->session->set_flashdata('message', '<div class="alert alert-success m-auto" role="alert">Berhasil melakukan booking.</div>');
+				redirect('home');
+			}
 		}
 	}
 }

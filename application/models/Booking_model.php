@@ -48,4 +48,16 @@ class Booking_model extends CI_Model
 			return false;
 		}
 	}
+
+	// melihat detail booking
+	public function detail($produk_id)
+	{
+
+		$this->db->select('*');
+		$this->db->from('booking');
+		$this->db->join('payment', 'payment.invoice = booking.pay_invoice');
+		$this->db->where('booking.pay_invoice = payment.invoice');
+
+		return $this->db->get()->row_array();
+	}
 }

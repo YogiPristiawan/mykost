@@ -23,22 +23,19 @@ class Booking extends CI_Controller
 		$data['title'] = 'Daftar Booking';
 		$data['booking'] = $this->booking->getAll();
 
-		$this->load->view('layouts/header', $data);
+		$this->load->view('admin/layouts/header', $data);
 		$this->load->view('admin/booking/index');
-		$this->load->view('layouts/footer');
+		$this->load->view('admin/layouts/footer');
 	}
 
 	//  hapus data booking
-	public function delete()
+	public function delete($produk_id = '', $booking_id = '')
 	{
 
-		//  jika tidak ada data yang dikirimkan dan yang mengakses bukan admin redirect 404 Not Found
-		if (empty($this->input->post()) || !isAdmin()) {
+		//  jika yang mengakses bukan admin redirect 404 Not Found
+		if (!isAdmin()) {
 			return $this->err_404();
 		}
-
-		$produk_id = $this->input->post('produk_id');
-		$booking_id = $this->input->post('booking_id');
 
 		$this->db->db_debug = FALSE;
 		$this->db->trans_start();
@@ -47,10 +44,10 @@ class Booking extends CI_Controller
 		$this->db->trans_complete();
 
 		if ($this->db->trans_status() === FALSE) {
-			$this->session->set_flashdata('message', 'Booking gagal dibatalkan!');
+			$this->session->set_flashdata('message', '<div class="alert alert-danger m-auto" role="alert">Data booking gagal dihapus.</div>');
 			redirect(base_url('booking'));
 		} else {
-			$this->session->set_flashdata('message', 'Booking berhasil dibatalkan!');
+			$this->session->set_flashdata('message', '<div class="alert alert-success m-auto" role="alert">Data booking berhasil dihapus.</div>');
 			redirect(base_url('booking'));
 		}
 	}

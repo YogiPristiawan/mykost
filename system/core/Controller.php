@@ -104,8 +104,8 @@ class CI_Controller
 	public function err_404()
 	{
 		$this->output->set_status_header('404');
-		$this->load->view('layouts/header', ['title' => '404 | Halaman tidak ditemukan']);
-		$this->load->view('errors/error_404');
-		$this->load->view('layouts/footer');
+
+		$data['title'] = '404 | Halaman tidak ditemukan.';
+		$this->load->view('errors/error_404', $data);
 	}
 }

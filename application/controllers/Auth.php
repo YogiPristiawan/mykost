@@ -16,9 +16,10 @@ class Auth extends CI_Controller
 			$this->_login();
 		} else {
 			$data['title'] = 'Login';
-			$this->load->view('layouts/header', $data);
+
+			$this->load->view('admin/layouts/header', $data);
 			$this->load->view('pages/login/index');
-			$this->load->view('layouts/footer');
+			$this->load->view('admin/layouts/footer');
 		}
 	}
 
@@ -37,7 +38,6 @@ class Auth extends CI_Controller
 
 				$data['username'] = $user['username'];
 				$data['email'] = $user['email'];
-				$data['password'] = $user['password'];
 
 				$this->session->set_userdata($data);  // simpan data admin ke dalam session
 				redirect(base_url('admin'));

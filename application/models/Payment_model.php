@@ -9,6 +9,12 @@ class Payment_model extends CI_Model
 		return $this->db->get('payment')->result_array();
 	}
 
+	// tambah data pembayaran
+	public function add($data)
+	{
+		return $this->db->insert('payment', $data);
+	}
+
 	// tampilkan detail pembayaran berdasarkan invoice
 	public function getByInvoice($invoice)
 	{
@@ -17,11 +23,5 @@ class Payment_model extends CI_Model
 		$this->db->where('invoice', $invoice);
 
 		return $this->db->get()->row_array();
-	}
-
-	// delete data pembayaran
-	public function delete($invoice)
-	{
-		return $this->db->delete('payment', ['invoice' => $invoice]);
 	}
 }

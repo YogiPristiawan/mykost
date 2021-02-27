@@ -10,8 +10,9 @@ class Admin extends CI_Controller
 			return $this->err_404();
 		}
 		$data['title'] = 'Halaman admin';
-		$this->load->view('layouts/header', $data);
+
+		$this->load->view('admin/layouts/header', $data);
 		$this->load->view('admin/home/index');
-		$this->load->view('layouts/footer');
+		$this->load->view('admin/layouts/footer');
 	}
 }
